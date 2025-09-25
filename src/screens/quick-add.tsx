@@ -21,7 +21,9 @@ interface QuickAddProps {
 
 const channels: Array<{ id: ContactChannel; label: string; icon: React.ElementType; color: string }> = [
   { id: "whatsapp", label: "WhatsApp", icon: MessageCircle, color: "text-green-600" },
-  { id: "call", label: "Call", icon: Phone, color: "text-blue-600" },
+  { id: "instagram", label: "Instagram", icon: MessageSquare, color: "text-pink-600" },
+  { id: "tiktok", label: "TikTok", icon: MessageSquare, color: "text-purple-600" },
+  { id: "call", label: "Phone Call", icon: Phone, color: "text-blue-600" },
   { id: "sms", label: "SMS", icon: MessageSquare, color: "text-orange-600" },
 ];
 
@@ -111,7 +113,10 @@ export function QuickAdd({ onAddReminder, onBack }: QuickAddProps) {
 
         {/* Date & Time */}
         <div className="space-y-3">
-          <Label>Reminder Date & Time</Label>
+          <div className="flex items-center justify-between">
+            <Label>Reminder Date & Time</Label>
+            <span className="text-sm text-muted-foreground">Recommended: 3 days after initial contact</span>
+          </div>
           <div className="flex gap-2">
             <Popover>
               <PopoverTrigger asChild>

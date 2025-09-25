@@ -59,19 +59,6 @@ export function Dashboard({ reminders, onUpdateReminder }: DashboardProps) {
     setOutcomeModal({ isOpen: false, reminderId: "", customerName: "" });
   };
 
-  const handleSnooze = (id: string) => {
-    // Add 1 day to reminder date
-    const reminder = reminders.find(r => r.id === id);
-    if (!reminder) return;
-    
-    const newDate = new Date(reminder.reminderDate);
-    newDate.setDate(newDate.getDate() + 1);
-    
-    onUpdateReminder(id, {
-      reminderDate: newDate,
-      status: "snoozed",
-    });
-  };
 
   const handleSkip = (id: string) => {
     onUpdateReminder(id, {
@@ -109,7 +96,6 @@ export function Dashboard({ reminders, onUpdateReminder }: DashboardProps) {
               key={reminder.id}
               reminder={reminder}
               onComplete={handleComplete}
-              onSnooze={handleSnooze}
               onSkip={handleSkip}
             />
           ))}
@@ -130,7 +116,6 @@ export function Dashboard({ reminders, onUpdateReminder }: DashboardProps) {
               key={reminder.id}
               reminder={reminder}
               onComplete={handleComplete}
-              onSnooze={handleSnooze}
               onSkip={handleSkip}
             />
           ))}
@@ -151,7 +136,7 @@ export function Dashboard({ reminders, onUpdateReminder }: DashboardProps) {
               key={reminder.id}
               reminder={reminder}
               onComplete={handleComplete}
-              onSnooze={handleSnooze}
+              
               onSkip={handleSkip}
             />
           ))}

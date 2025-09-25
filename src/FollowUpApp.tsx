@@ -4,10 +4,11 @@ import { BottomNav } from "@/components/ui/bottom-nav";
 import { Dashboard } from "@/screens/dashboard";
 import { QuickAdd } from "@/screens/quick-add";
 import { AnalyticsScreen } from "@/screens/analytics";
+import { History } from "@/screens/history";
 import { Onboarding } from "@/screens/onboarding";
 import { useFollowUps } from "@/hooks/use-followups";
 
-type AppScreen = "onboarding" | "dashboard" | "add" | "analytics";
+type AppScreen = "onboarding" | "dashboard" | "add" | "history" | "analytics";
 
 const ONBOARDING_KEY = "followup-onboarding-completed";
 
@@ -38,6 +39,8 @@ export default function FollowUpApp() {
         return "FollowUp";
       case "add":
         return "Add Reminder";
+      case "history":
+        return "Customer History";
       case "analytics":
         return "Analytics";
       default:
@@ -74,6 +77,10 @@ export default function FollowUpApp() {
             onAddReminder={addReminder}
             onBack={() => setCurrentScreen("dashboard")}
           />
+        )}
+
+        {currentScreen === "history" && (
+          <History reminders={reminders} />
         )}
 
         {currentScreen === "analytics" && (

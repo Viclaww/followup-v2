@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { MessageCircle, Phone, MessageSquare, CheckCircle, Clock, X } from "lucide-react";
+import { MessageCircle, Phone, MessageSquare, CheckCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FollowUp, ContactChannel } from "@/types/followup";
@@ -8,23 +8,26 @@ import { cn } from "@/lib/utils";
 interface ReminderCardProps {
   reminder: FollowUp;
   onComplete: (id: string) => void;
-  onSnooze: (id: string) => void;
   onSkip: (id: string) => void;
 }
 
 const channelIcons: Record<ContactChannel, React.ElementType> = {
   whatsapp: MessageCircle,
+  instagram: MessageSquare,
+  tiktok: MessageSquare,
   call: Phone,
   sms: MessageSquare,
 };
 
 const channelColors: Record<ContactChannel, string> = {
   whatsapp: "text-green-600",
+  instagram: "text-pink-600",
+  tiktok: "text-purple-600",
   call: "text-blue-600", 
   sms: "text-orange-600",
 };
 
-export function ReminderCard({ reminder, onComplete, onSnooze, onSkip }: ReminderCardProps) {
+export function ReminderCard({ reminder, onComplete, onSkip }: ReminderCardProps) {
   const Icon = channelIcons[reminder.channel];
   const isOverdue = new Date() > reminder.reminderDate;
   
@@ -70,21 +73,13 @@ export function ReminderCard({ reminder, onComplete, onSnooze, onSkip }: Reminde
             Done
           </Button>
           <Button
-            onClick={() => onSnooze(reminder.id)}
+            onClick={() => onSkip(reminder.id)}
             variant="outline"
             size="sm"
             className="flex-1"
           >
-            <Clock className="h-4 w-4 mr-1" />
-            Snooze
-          </Button>
-          <Button
-            onClick={() => onSkip(reminder.id)}
-            variant="outline"
-            size="sm"
-            className="px-3"
-          >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 mr-1" />
+            Skip / Missed
           </Button>
         </div>
       </CardContent>

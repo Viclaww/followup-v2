@@ -1,4 +1,4 @@
-import { Home, Plus, BarChart3 } from "lucide-react";
+import { Home, Plus, BarChart3, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
@@ -9,6 +9,7 @@ interface BottomNavProps {
 const tabs = [
   { id: "dashboard", label: "Home", icon: Home },
   { id: "add", label: "Add", icon: Plus },
+  { id: "history", label: "History", icon: History },
   { id: "analytics", label: "Stats", icon: BarChart3 },
 ];
 

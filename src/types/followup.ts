@@ -1,4 +1,4 @@
-export type ContactChannel = "whatsapp" | "call" | "sms";
+export type ContactChannel = "whatsapp" | "instagram" | "tiktok" | "call" | "sms";
 
 export type FollowUpStatus = "pending" | "completed" | "snoozed" | "skipped";
 
