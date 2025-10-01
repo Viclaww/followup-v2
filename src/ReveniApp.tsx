@@ -10,7 +10,7 @@ import { useFollowUps } from "@/hooks/use-followups";
 
 type AppScreen = "onboarding" | "dashboard" | "add" | "history" | "analytics";
 
-const ONBOARDING_KEY = "followup-onboarding-completed";
+const ONBOARDING_KEY = "reveni-onboarding-completed";
 
 export default function FollowUpApp() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>("onboarding");
@@ -36,7 +36,7 @@ export default function FollowUpApp() {
   const getHeaderTitle = () => {
     switch (currentScreen) {
       case "dashboard":
-        return "FollowUp";
+        return "Reveni";
       case "add":
         return "Add Reminder";
       case "history":

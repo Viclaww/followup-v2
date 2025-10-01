@@ -16,7 +16,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
         {/* App Name */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">FollowUp</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Reveni</h1>
           <p className="text-lg text-muted-foreground">
             Big businesses never forget to follow up.
             <br />
@@ -62,7 +62,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           onClick={onComplete}
           className="w-full h-14 text-lg font-semibold shadow-lg"
         >
-          Start Using FollowUp
+          Start Using Reveni
         </Button>
 
         <p className="text-xs text-muted-foreground">
