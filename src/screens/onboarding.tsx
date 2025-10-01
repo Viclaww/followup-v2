@@ -18,9 +18,9 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Reveni</h1>
           <p className="text-lg text-muted-foreground">
-            Turn one-time buyers into loyal customers.
+            Big businesses always retarget their customers.
             <br />
-            <span className="font-semibold text-primary">Grow your revenue through retention.</span>
+            <span className="font-semibold text-primary">Now you can too.</span>
           </p>
         </div>
 
@@ -31,8 +31,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               <CheckCircle className="h-5 w-5 text-success" />
             </div>
             <div className="text-left">
-              <p className="font-medium">Retarget past buyers</p>
-              <p className="text-sm text-muted-foreground">Re-engage customers who bought before</p>
+              <p className="font-medium">Log every sale</p>
+              <p className="text-sm text-muted-foreground">Save customer details and set reminders</p>
             </div>
           </div>
           
@@ -41,8 +41,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               <Users className="h-5 w-5 text-warning" />
             </div>
             <div className="text-left">
-              <p className="font-medium">Build repeat customers</p>
-              <p className="text-sm text-muted-foreground">Upsell and nurture loyalty</p>
+              <p className="font-medium">Get AI upsell templates</p>
+              <p className="text-sm text-muted-foreground">Copy, paste, and retarget with confidence</p>
             </div>
           </div>
           
@@ -51,8 +51,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
             <div className="text-left">
-              <p className="font-medium">Increase your revenue</p>
-              <p className="text-sm text-muted-foreground">Track sales and retention</p>
+              <p className="font-medium">Track what works</p>
+              <p className="text-sm text-muted-foreground">See your outcomes and grow revenue</p>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         </Button>
 
         <p className="text-xs text-muted-foreground">
-          Retention made simple.
+          Never forget a customer again.
         </p>
       </div>
     </div>
