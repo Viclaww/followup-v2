@@ -90,7 +90,8 @@ jobs:
         run: |
           node .github/scripts/generate-tests.cjs \
             --files="${{ steps.copilot_implement.outputs.files_changed }}" \
-            --issue-number="${{ steps.issue.outputs.issue_number }}"
+            --issue-number="${{ steps.issue.outputs.issue_number }}" \
+            --skip-e2e
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

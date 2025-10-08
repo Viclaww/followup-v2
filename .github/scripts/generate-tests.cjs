@@ -13,7 +13,7 @@ class TestGenerator {
     this.apiKey = apiKey;
   }
 
-  async generateTests(files, issueNumber) {
+  async generateTests(files, issueNumber, skipE2E = false) {
     console.log("🧪 Generating tests for changed files...");
 
     const fileList = files.split(",").filter((f) => f.trim());
@@ -23,9 +23,13 @@ class TestGenerator {
         await this.generateUnitTest(file);
       }
 
-      if (file.includes("components/") || file.includes("pages/")) {
+      if (!skipE2E && (file.includes("components/") || file.includes("pages/"))) {
         await this.generateE2ETest(file, issueNumber);
       }
+    }
+
+    if (skipE2E) {
+      console.log("⏭️  Skipping E2E test generation");
     }
   }
 
@@ -136,12 +140,13 @@ const filesArg =
   args.find((arg) => arg.startsWith("--files="))?.split("=")[1] || "";
 const issueArg =
   args.find((arg) => arg.startsWith("--issue-number="))?.split("=")[1] || "";
+const skipE2E = args.includes("--skip-e2e");
 
 const apiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY;
 const generator = new TestGenerator(apiKey);
 
 generator
-  .generateTests(filesArg, issueArg)
+  .generateTests(filesArg, issueArg, skipE2E)
   .then(() => console.log("✅ Test generation complete"))
   .catch((err) => {
     console.error("❌ Test generation failed:", err);
