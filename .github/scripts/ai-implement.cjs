@@ -277,9 +277,15 @@ if (require.main === module) {
           process.env.GITHUB_OUTPUT,
           `files_changed=${result.filesChanged.join(',')}\n`
         );
+        
+        // Handle summary as either string or array
+        const summaryText = Array.isArray(result.summary) 
+          ? result.summary.join('\\n') 
+          : result.summary;
+        
         fs.appendFileSync(
           process.env.GITHUB_OUTPUT,
-          `implementation_summary=${result.summary.join('\\n')}\n`
+          `implementation_summary=${summaryText}\n`
         );
       }
       
