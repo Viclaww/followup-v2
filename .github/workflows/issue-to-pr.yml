@@ -43,7 +43,11 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const issue_number = context.payload.issue?.number || ${{ github.event.inputs.issue_number }};
+            const issue_number = context.payload.issue?.number;
+            if (!issue_number) {
+              throw new Error('Issue number not found in payload');
+            }
+            
             const { data: issue } = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
