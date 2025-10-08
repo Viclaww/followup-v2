@@ -77,11 +77,13 @@ class GitHubCopilotImplementer {
 
     try {
       // Call GitHub Models API
+      // Note: Using GitHub's API endpoint for models marketplace
       const response = await fetch(`${this.apiUrl}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${this.githubToken}`,
+          "api-key": this.githubToken, // Azure-style header as fallback
         },
         body: JSON.stringify({
           messages: [
@@ -115,7 +117,43 @@ class GitHubCopilotImplementer {
     }
   }
 
-  getSystemPrompt(projectContext) {
+  async loadContextFiles() {
+    const contextDir = path.join(__dirname, "..", "copilot-rules");
+    const contextFiles = [];
+    
+    try {
+      const files = await fs.readdir(contextDir);
+      
+      for (const file of files) {
+        if (file.endsWith(".md")) {
+          const content = await fs.readFile(path.join(contextDir, file), "utf-8");
+          contextFiles.push({
+            name: file,
+            content: content,
+          });
+        }
+      }
+      
+      console.log(`📚 Loaded ${contextFiles.length} context files`);
+    } catch (error) {
+      console.log("⚠️  No context files found, using basic prompts");
+    }
+    
+    return contextFiles;
+  }
+
+  async getSystemPrompt(projectContext) {
+    // Load context files (like Windsurf Rules)
+    const contextFiles = await this.loadContextFiles();
+    
+    let contextSection = "";
+    if (contextFiles.length > 0) {
+      contextSection = "\n\n## Project Context & Best Practices\n\n";
+      for (const file of contextFiles) {
+        contextSection += `### From ${file.name}\n${file.content}\n\n---\n\n`;
+      }
+    }
+    
     return `You are an expert React/TypeScript developer. Generate code changes for the following project:
 
 Project Stack:
@@ -123,13 +161,7 @@ ${projectContext.stack}
 
 Available Components:
 ${projectContext.components.join(", ")}
-
-Coding Standards:
-- Use TypeScript with proper types
-- Use Tailwind CSS for styling
-- Use shadcn/ui components when available
-- Follow React best practices
-- Include proper error handling
+${contextSection}
 
 Return your response as a JSON object with this structure:
 {
@@ -142,7 +174,9 @@ Return your response as a JSON object with this structure:
     }
   ],
   "explanation": "Brief explanation of changes"
-}`;
+}
+
+CRITICAL: Follow ALL patterns from the context files above. Use existing components, follow exact TypeScript patterns, and implement tests as specified.`;
   }
 
   getUserPrompt(issueTitle, issueBody) {
