@@ -75,7 +75,7 @@ jobs:
       - name: Generate implementation with Copilot
         id: copilot_implement
         run: |
-          node .github/scripts/ai-implement.js \
+          node .github/scripts/ai-implement.cjs \
             --issue-number="${{ steps.issue.outputs.issue_number }}" \
             --issue-title="${{ steps.issue.outputs.issue_title }}" \
             --issue-body="${{ steps.issue.outputs.issue_body }}"
@@ -87,7 +87,7 @@ jobs:
 
       - name: Generate tests
         run: |
-          node .github/scripts/generate-tests.js \
+          node .github/scripts/generate-tests.cjs \
             --files="${{ steps.copilot_implement.outputs.files_changed }}" \
             --issue-number="${{ steps.issue.outputs.issue_number }}"
         env:

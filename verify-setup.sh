@@ -84,21 +84,21 @@ fi
 echo ""
 echo "Checking AI scripts..."
 
-if [ -f ".github/scripts/ai-implement.js" ]; then
+if [ -f ".github/scripts/ai-implement.cjs" ]; then
     echo -e "${GREEN}✓${NC} ai-implement.js exists"
 else
     echo -e "${RED}✗${NC} ai-implement.js not found"
     ERRORS=$((ERRORS + 1))
 fi
 
-if [ -f ".github/scripts/generate-tests.js" ]; then
+if [ -f ".github/scripts/generate-tests.cjs" ]; then
     echo -e "${GREEN}✓${NC} generate-tests.js exists"
 else
     echo -e "${RED}✗${NC} generate-tests.js not found"
     ERRORS=$((ERRORS + 1))
 fi
 
-if [ -f ".github/scripts/ai-autofix.js" ]; then
+if [ -f ".github/scripts/ai-autofix.cjs" ]; then
     echo -e "${GREEN}✓${NC} ai-autofix.js exists"
 else
     echo -e "${RED}✗${NC} ai-autofix.js not found"

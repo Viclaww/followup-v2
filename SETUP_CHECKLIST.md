@@ -160,7 +160,7 @@ Go to Settings → Labels and create:
 
 ### Adjust AI Behavior
 
-- [ ] Review `.github/scripts/ai-implement.js`
+- [ ] Review `.github/scripts/ai-implement.cjs`
 - [ ] Customize code generation templates
 - [ ] Adjust naming conventions
 - [ ] Update file structure patterns

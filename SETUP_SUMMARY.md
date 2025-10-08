@@ -18,10 +18,10 @@ I've set up a comprehensive, production-ready AI development workflow for your R
 ### AI Scripts (4 files)
 
 ```
-✅ .github/scripts/ai-implement.js          - Code generator
-✅ .github/scripts/generate-tests.js        - Test generator
-✅ .github/scripts/ai-autofix.js            - Auto-fix engine
-✅ .github/scripts/create-issue.js          - Issue helper
+✅ .github/scripts/ai-implement.cjs          - Code generator
+✅ .github/scripts/generate-tests.cjs        - Test generator
+✅ .github/scripts/ai-autofix.cjs            - Auto-fix engine
+✅ .github/scripts/create-issue.cjs          - Issue helper
 ```
 
 ### Issue Templates (2 files)
@@ -159,7 +159,7 @@ npx playwright install --with-deps
 5. Submit
 
 # Method 2: Use CLI helper
-node .github/scripts/create-issue.js
+node .github/scripts/create-issue.cjs
 
 # Method 3: Manual workflow trigger
 Actions → "AI Agent - Issue to PR" → Run workflow → Enter issue #

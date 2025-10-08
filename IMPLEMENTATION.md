@@ -45,20 +45,20 @@ GitHub Issue → AI Analysis → Code Generation → Tests → PR → Auto-Fix �
 
 ### AI Scripts
 
-1. **`.github/scripts/ai-implement.js`**
+1. **`.github/scripts/ai-implement.cjs`**
 
    - AI-powered code implementation
    - Analyzes issue requirements
    - Generates React/TypeScript code
    - Creates new components and features
 
-2. **`.github/scripts/generate-tests.js`**
+2. **`.github/scripts/generate-tests.cjs`**
 
    - Generates unit tests (Vitest)
    - Generates E2E tests (Playwright)
    - Creates test scenarios based on implementation
 
-3. **`.github/scripts/ai-autofix.js`**
+3. **`.github/scripts/ai-autofix.cjs`**
    - Automatically fixes linting errors
    - Resolves type errors
    - Fixes build issues
@@ -283,7 +283,7 @@ followup-v2/
 
 ### Modifying AI Behavior
 
-**Edit `.github/scripts/ai-implement.js`**:
+**Edit `.github/scripts/ai-implement.cjs`**:
 
 ```javascript
 // Change component template
@@ -299,7 +299,7 @@ kebabCase(str) {
 
 ### Adjusting Tests
 
-**Edit `.github/scripts/generate-tests.js`**:
+**Edit `.github/scripts/generate-tests.cjs`**:
 
 ```javascript
 // Add more test scenarios

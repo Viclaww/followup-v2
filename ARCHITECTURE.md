@@ -208,7 +208,7 @@ Results Analysis
 ```
 .github/workflows/issue-to-pr.yml
     ↓ uses
-.github/scripts/ai-implement.js
+.github/scripts/ai-implement.cjs
     ↓ reads
 src/components/**
 src/hooks/**
@@ -216,7 +216,7 @@ src/pages/**
     ↓ generates
 New/Modified Files
     ↓ triggers
-.github/scripts/generate-tests.js
+.github/scripts/generate-tests.cjs
     ↓ creates
 tests/unit/**
 tests/e2e/**
@@ -228,7 +228,7 @@ ai/issue-{number}-{title} branch
 playwright.config.ts
 vitest.config.ts
     ↓ on failure, uses
-.github/scripts/ai-autofix.js
+.github/scripts/ai-autofix.cjs
     ↓ modifies
 Source files
     ↓ pushes to

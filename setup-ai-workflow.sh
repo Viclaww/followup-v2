@@ -48,7 +48,7 @@ echo ""
 
 # Step 4: Set permissions for scripts
 echo -e "${BLUE}🔐 Setting script permissions...${NC}"
-chmod +x .github/scripts/*.js
+chmod +x .github/scripts/*.cjs
 
 echo -e "${GREEN}✅ Permissions set${NC}"
 echo ""

@@ -167,7 +167,7 @@ echo '{
 The MCP servers are automatically used by the AI workflow. To manually enhance the AI implementation script:
 
 ```javascript
-// In .github/scripts/ai-implement.js
+// In .github/scripts/ai-implement.cjs
 
 // Import MCP client
 import { MCPClient } from "@modelcontextprotocol/sdk/client/index.js";
@@ -239,7 +239,7 @@ npm install --save-dev @modelcontextprotocol/sdk
 
 ```bash
 # Run the enhanced AI workflow
-node .github/scripts/ai-implement.js --test-mcp
+node .github/scripts/ai-implement.cjs --test-mcp
 ```
 
 ## Resources

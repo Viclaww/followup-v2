@@ -88,7 +88,7 @@ MCP servers are configured in `mcp.json` at the project root:
 
 ## Integration with AI Workflow
 
-The AI implementation script (`.github/scripts/ai-implement.js`) can be enhanced to use MCP servers:
+The AI implementation script (`.github/scripts/ai-implement.cjs`) can be enhanced to use MCP servers:
 
 ```javascript
 // Query MCP for project context

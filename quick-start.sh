@@ -147,8 +147,8 @@ read -p "Would you like to create a test issue now? (y/n) " -n 1 -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    if [ -f ".github/scripts/create-issue.js" ]; then
-        node .github/scripts/create-issue.js
+    if [ -f ".github/scripts/create-issue.cjs" ]; then
+        node .github/scripts/create-issue.cjs
     else
         echo ""
         echo "Issue creation script not found."

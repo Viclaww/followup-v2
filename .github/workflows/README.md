@@ -187,7 +187,7 @@ The AI comments on PRs with:
 
 ### Modify AI Prompts
 
-Edit `.github/scripts/ai-implement.js` to customize:
+Edit `.github/scripts/ai-implement.cjs` to customize:
 
 - Code generation templates
 - Component patterns
@@ -195,7 +195,7 @@ Edit `.github/scripts/ai-implement.js` to customize:
 
 ### Adjust Test Generation
 
-Edit `.github/scripts/generate-tests.js` to:
+Edit `.github/scripts/generate-tests.cjs` to:
 
 - Add more test scenarios
 - Change test frameworks
@@ -203,7 +203,7 @@ Edit `.github/scripts/generate-tests.js` to:
 
 ### Configure Auto-Fix
 
-Edit `.github/scripts/ai-autofix.js` to:
+Edit `.github/scripts/ai-autofix.cjs` to:
 
 - Add more fix patterns
 - Integrate with AI APIs

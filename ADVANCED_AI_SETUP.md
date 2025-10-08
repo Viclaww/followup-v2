@@ -10,7 +10,7 @@ The current setup provides a foundation. To integrate real AI capabilities:
 
 1. **Get API Key**: https://platform.openai.com/api-keys
 
-2. **Update `.github/scripts/ai-implement.js`**:
+2. **Update `.github/scripts/ai-implement.cjs`**:
 
 ```javascript
 async function callOpenAI(prompt) {
@@ -47,7 +47,7 @@ async function callOpenAI(prompt) {
 
 1. **Get API Key**: https://console.anthropic.com/
 
-2. **Update `.github/scripts/ai-implement.js`**:
+2. **Update `.github/scripts/ai-implement.cjs`**:
 
 ```javascript
 async function callClaude(prompt) {

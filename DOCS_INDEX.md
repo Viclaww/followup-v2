@@ -77,7 +77,7 @@ Step-by-step checklist for complete setup.
 ### I Want to Customize the AI
 
 1. Read [ADVANCED_AI_SETUP.md](ADVANCED_AI_SETUP.md)
-2. Edit `.github/scripts/ai-implement.js`
+2. Edit `.github/scripts/ai-implement.cjs`
 3. Configure AI API keys in GitHub Secrets
 
 ### I Want to Troubleshoot Issues
@@ -129,10 +129,10 @@ package.json              → npm scripts & dependencies
 ### Scripts
 
 ```
-.github/scripts/ai-implement.js      → AI code generator
-.github/scripts/generate-tests.js    → Test generator
-.github/scripts/ai-autofix.js        → Auto-fix engine
-.github/scripts/create-issue.js      → Issue helper
+.github/scripts/ai-implement.cjs      → AI code generator
+.github/scripts/generate-tests.cjs    → Test generator
+.github/scripts/ai-autofix.cjs        → Auto-fix engine
+.github/scripts/create-issue.cjs      → Issue helper
 setup-ai-workflow.sh                 → Setup script
 verify-setup.sh                      → Verification script
 ```
@@ -202,7 +202,7 @@ npm run build                   # Build project
 npm run lint                    # Run linting
 
 # Helpers
-node .github/scripts/create-issue.js  # Create issue interactively
+node .github/scripts/create-issue.cjs  # Create issue interactively
 ```
 
 ### Key Labels

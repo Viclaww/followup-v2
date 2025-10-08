@@ -164,17 +164,12 @@ jobs:
           path: ./playwright-report
         continue-on-error: true
 
-      - name: AI Auto-fix
-        id: autofix
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Auto-fix with AI
+        if: failure()
         run: |
-          node .github/scripts/ai-autofix.js \
-            --lint-failed="${{ needs.quality-checks.outputs.lint_failed }}" \
-            --type-failed="${{ needs.quality-checks.outputs.type_failed }}" \
-            --build-failed="${{ needs.quality-checks.outputs.build_failed }}" \
-            --tests-failed="${{ needs.playwright-tests.outputs.tests_failed }}"
+          node .github/scripts/ai-autofix.cjs \
+            --pr-number="${{ github.event.pull_request.number }}" \
+            --check-name="${{ github.job }}"
 
       - name: Commit fixes
         id: commit

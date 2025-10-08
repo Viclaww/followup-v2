@@ -87,7 +87,7 @@ You can also set these in `.github/mcp-config.json` directly.
 Create a test issue:
 
 ```bash
-node .github/scripts/create-issue.js
+node .github/scripts/create-issue.cjs
 ```
 
 Or manually:
@@ -164,7 +164,7 @@ Or manually:
 ### Method 2: Use the Helper Script
 
 ```bash
-node .github/scripts/create-issue.js
+node .github/scripts/create-issue.cjs
 ```
 
 Follow the prompts to create a well-structured issue.
@@ -352,7 +352,7 @@ npm run test:e2e:ui
 
 ### Using Real AI APIs
 
-Edit `.github/scripts/ai-implement.js`:
+Edit `.github/scripts/ai-implement.cjs`:
 
 ```javascript
 // Instead of template-based generation
@@ -455,7 +455,7 @@ Your AI-driven development workflow is fully configured and ready to use. The co
 **Next:** Create your first AI-implemented feature!
 
 ```bash
-node .github/scripts/create-issue.js
+node .github/scripts/create-issue.cjs
 ```
 
 ---

@@ -31,10 +31,10 @@ Your AI-driven development workflow now includes **Model Context Protocol (MCP)*
 
 ### AI Implementation Scripts
 
-1. **`.github/scripts/ai-implement.js`** - AI code generator
-2. **`.github/scripts/generate-tests.js`** - Test generator
-3. **`.github/scripts/ai-autofix.js`** - Auto-fix engine
-4. **`.github/scripts/create-issue.js`** - Issue creation helper
+1. **`.github/scripts/ai-implement.cjs`** - AI code generator
+2. **`.github/scripts/generate-tests.cjs`** - Test generator
+3. **`.github/scripts/ai-autofix.cjs`** - Auto-fix engine
+4. **`.github/scripts/create-issue.cjs`** - Issue creation helper
 
 ### Testing Infrastructure
 
@@ -207,7 +207,7 @@ Go to: `https://github.com/Viclaww/followup-v2/settings/secrets/actions`
 ### Step 5: Test the Workflow!
 
 ```bash
-node .github/scripts/create-issue.js
+node .github/scripts/create-issue.cjs
 ```
 
 Or manually:
@@ -285,7 +285,7 @@ Run this checklist to ensure everything is set up:
 - [ ] ✅ Confirm all 3 custom MCP servers exist in `.github/mcp-servers/`
 - [ ] ✅ Run `./setup-ai-workflow.sh` to install dependencies
 - [ ] ✅ Configure Firebase Project ID in MCP config
-- [ ] ✅ Test with a simple issue: `node .github/scripts/create-issue.js`
+- [ ] ✅ Test with a simple issue: `node .github/scripts/create-issue.cjs`
 - [ ] ✅ Review generated PR for code quality
 - [ ] ✅ Verify tests pass in PR checks
 
@@ -308,7 +308,7 @@ Run this checklist to ensure everything is set up:
                       ▼
 ┌─────────────────────────────────────────────────────┐
 │           AI Implementation Script                  │
-│        (.github/scripts/ai-implement.js)            │
+│        (.github/scripts/ai-implement.cjs)            │
 │                                                      │
 │  ┌──────────────────────────────────────────┐      │
 │  │  1. Query MCP Servers for Context        │      │
@@ -329,7 +329,7 @@ Run this checklist to ensure everything is set up:
                       ▼
 ┌─────────────────────────────────────────────────────┐
 │           Test Generation Script                    │
-│       (.github/scripts/generate-tests.js)           │
+│       (.github/scripts/generate-tests.cjs)           │
 │                                                      │
 │  ┌──────────────────────────────────────────┐      │
 │  │  1. Query Playwright MCP for patterns    │      │
@@ -464,7 +464,7 @@ Your AI-driven development workflow with MCP integration is **fully configured a
 
 ```bash
 # Create your first AI-implemented feature
-node .github/scripts/create-issue.js
+node .github/scripts/create-issue.cjs
 
 # Or manually create an issue and add 'ai-implement' label
 # Then watch the AI work its magic! 🎩✨

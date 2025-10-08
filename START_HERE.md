@@ -15,10 +15,10 @@ I've built a **complete, production-ready AI-driven development workflow** for y
 
 ### AI Scripts (4 files)
 
-✅ `.github/scripts/ai-implement.js` - AI code generator  
-✅ `.github/scripts/generate-tests.js` - Auto-generates tests  
-✅ `.github/scripts/ai-autofix.js` - Fixes failing tests automatically  
-✅ `.github/scripts/create-issue.js` - Helper to create well-formed issues
+✅ `.github/scripts/ai-implement.cjs` - AI code generator  
+✅ `.github/scripts/generate-tests.cjs` - Auto-generates tests  
+✅ `.github/scripts/ai-autofix.cjs` - Fixes failing tests automatically  
+✅ `.github/scripts/create-issue.cjs` - Helper to create well-formed issues
 
 ### Issue Templates (2 files)
 
