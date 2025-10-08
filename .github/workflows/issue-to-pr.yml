@@ -1,0 +1,188 @@
+name: AI Agent - Issue to PR
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process'
+        required: true
+        type: number
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-branch-and-implement:
+    if: |
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'ai-implement')) ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get issue details
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.payload.issue?.number || ${{ github.event.inputs.issue_number }};
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number
+            });
+            
+            const branchName = `ai/issue-${issue_number}-${issue.title
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .substring(0, 50)}`;
+            
+            core.setOutput('issue_number', issue_number);
+            core.setOutput('issue_title', issue.title);
+            core.setOutput('issue_body', issue.body || '');
+            core.setOutput('branch_name', branchName);
+            
+            return { issue_number, branchName, title: issue.title, body: issue.body };
+
+      - name: Create branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b ${{ steps.issue.outputs.branch_name }}
+
+      - name: Generate implementation with Copilot
+        id: copilot_implement
+        uses: actions/github-script@v7
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ISSUE_TITLE: ${{ steps.issue.outputs.issue_title }}
+          ISSUE_BODY: ${{ steps.issue.outputs.issue_body }}
+          MCP_CONFIG_PATH: ${{ github.workspace }}/.github/workflows/mcp-config.json
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { execSync } = require('child_process');
+            
+            // Read the AI implementation script
+            const scriptPath = path.join(process.env.GITHUB_WORKSPACE, '.github/scripts/ai-implement.js');
+            const aiImplement = require(scriptPath);
+            
+            // Run AI implementation with MCP context
+            const result = await aiImplement.implement({
+              issueTitle: process.env.ISSUE_TITLE,
+              issueBody: process.env.ISSUE_BODY,
+              workspace: process.env.GITHUB_WORKSPACE,
+              apiKey: process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY,
+              mcpConfigPath: process.env.MCP_CONFIG_PATH
+            });
+            
+            core.setOutput('files_changed', result.filesChanged.join(','));
+            core.setOutput('implementation_summary', result.summary);
+
+      - name: Generate tests
+        run: |
+          node .github/scripts/generate-tests.js \
+            --files="${{ steps.copilot_implement.outputs.files_changed }}" \
+            --issue-number="${{ steps.issue.outputs.issue_number }}"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "feat: implement #${{ steps.issue.outputs.issue_number }} - ${{ steps.issue.outputs.issue_title }}
+          
+          Auto-generated implementation for issue #${{ steps.issue.outputs.issue_number }}
+          
+          Changes:
+          ${{ steps.copilot_implement.outputs.implementation_summary }}
+          
+          Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
+      - name: Push branch
+        run: git push origin ${{ steps.issue.outputs.branch_name }}
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🤖 AI: ${context.payload.issue.title}`,
+              head: '${{ steps.issue.outputs.branch_name }}',
+              base: 'main',
+              body: `
+              ## 🤖 AI-Generated Implementation
+              
+              Closes #${{ steps.issue.outputs.issue_number }}
+              
+              ### Implementation Summary
+              ${{ steps.copilot_implement.outputs.implementation_summary }}
+              
+              ### Files Changed
+              \`\`\`
+              ${{ steps.copilot_implement.outputs.files_changed }}
+              \`\`\`
+              
+              ### Testing
+              - ✅ Unit tests generated
+              - ✅ E2E tests generated
+              - ⏳ Automated testing in progress
+              
+              ---
+              *This PR was automatically generated by the AI development workflow.*
+              `
+            });
+            
+            // Add label to PR
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: ['ai-generated', 'automated']
+            });
+            
+            core.setOutput('pr_number', pr.number);
+            core.setOutput('pr_url', pr.html_url);
+            return pr.number;
+
+      - name: Comment on issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ steps.issue.outputs.issue_number }},
+              body: `🤖 **AI Implementation Started**
+              
+              I've created a branch and implemented the requested changes.
+              
+              📋 **Pull Request:** ${{ steps.create_pr.outputs.pr_url }}
+              🌿 **Branch:** \`${{ steps.issue.outputs.branch_name }}\`
+              
+              The PR will now go through automated testing. I'll fix any issues automatically.`
+            });

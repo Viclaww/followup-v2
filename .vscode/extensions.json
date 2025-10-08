@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "GitHub.copilot",
+    "GitHub.vscode-pull-request-github",
+    "ms-playwright.playwright",
+    "vitest.explorer",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "GitHub.vscode-github-actions"
+  ]
+}

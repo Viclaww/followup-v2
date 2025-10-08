@@ -1,0 +1,51 @@
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "firebase-project-id",
+      "description": "Firebase Project ID",
+      "password": false
+    },
+    {
+      "type": "promptString",
+      "id": "firebase-api-key",
+      "description": "Firebase API Key",
+      "password": true
+    }
+  ],
+  "servers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server@latest"],
+      "env": {
+        "PLAYWRIGHT_CONFIG_PATH": "${workspaceFolder}/playwright.config.ts"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/tests",
+        "${workspaceFolder}/.github"
+      ]
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git@latest",
+        "--repository",
+        "${workspaceFolder}"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@latest"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${secret:github-token}"
+      }
+    }
+  }
+}

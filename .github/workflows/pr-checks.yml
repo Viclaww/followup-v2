@@ -1,0 +1,289 @@
+name: PR Checks & Auto-Fix
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    outputs:
+      lint_failed: ${{ steps.lint.outcome == 'failure' }}
+      type_failed: ${{ steps.typecheck.outcome == 'failure' }}
+      build_failed: ${{ steps.build.outcome == 'failure' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        id: lint
+        continue-on-error: true
+        run: |
+          npm run lint 2>&1 | tee lint-output.txt
+          echo "LINT_OUTPUT<<EOF" >> $GITHUB_ENV
+          cat lint-output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Type checking
+        id: typecheck
+        continue-on-error: true
+        run: |
+          npx tsc --noEmit 2>&1 | tee typecheck-output.txt
+          echo "TYPECHECK_OUTPUT<<EOF" >> $GITHUB_ENV
+          cat typecheck-output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Build project
+        id: build
+        continue-on-error: true
+        run: |
+          npm run build 2>&1 | tee build-output.txt
+          echo "BUILD_OUTPUT<<EOF" >> $GITHUB_ENV
+          cat build-output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Upload error logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-logs
+          path: |
+            lint-output.txt
+            typecheck-output.txt
+            build-output.txt
+
+  playwright-tests:
+    needs: quality-checks
+    if: needs.quality-checks.outputs.lint_failed != 'true' && needs.quality-checks.outputs.type_failed != 'true' && needs.quality-checks.outputs.build_failed != 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        id: playwright
+        continue-on-error: true
+        run: |
+          npm run test:e2e 2>&1 | tee playwright-output.txt
+          echo "PLAYWRIGHT_OUTPUT<<EOF" >> $GITHUB_ENV
+          cat playwright-output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Set test results
+        id: test_results
+        run: |
+          if [ ${{ steps.playwright.outcome }} == 'failure' ]; then
+            echo "tests_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "tests_failed=false" >> $GITHUB_OUTPUT
+          fi
+
+    outputs:
+      tests_failed: ${{ steps.test_results.outputs.tests_failed }}
+
+  auto-fix:
+    needs: [quality-checks, playwright-tests]
+    if: |
+      always() && (
+        needs.quality-checks.outputs.lint_failed == 'true' ||
+        needs.quality-checks.outputs.type_failed == 'true' ||
+        needs.quality-checks.outputs.build_failed == 'true' ||
+        needs.playwright-tests.outputs.tests_failed == 'true'
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download error logs
+        uses: actions/download-artifact@v4
+        with:
+          name: error-logs
+          path: ./error-logs
+        continue-on-error: true
+
+      - name: Download Playwright report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report
+          path: ./playwright-report
+        continue-on-error: true
+
+      - name: AI Auto-fix
+        id: autofix
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node .github/scripts/ai-autofix.js \
+            --lint-failed="${{ needs.quality-checks.outputs.lint_failed }}" \
+            --type-failed="${{ needs.quality-checks.outputs.type_failed }}" \
+            --build-failed="${{ needs.quality-checks.outputs.build_failed }}" \
+            --tests-failed="${{ needs.playwright-tests.outputs.tests_failed }}"
+
+      - name: Commit fixes
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if [[ -n $(git status -s) ]]; then
+            git add .
+            git commit -m "fix: auto-fix issues from CI
+            
+            - Lint errors: ${{ needs.quality-checks.outputs.lint_failed }}
+            - Type errors: ${{ needs.quality-checks.outputs.type_failed }}
+            - Build errors: ${{ needs.quality-checks.outputs.build_failed }}
+            - Test failures: ${{ needs.playwright-tests.outputs.tests_failed }}
+            
+            Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+            
+            git push
+            echo "fixes_pushed=true" >> $GITHUB_OUTPUT
+          else
+            echo "fixes_pushed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let errorDetails = '';
+
+            if ('${{ needs.quality-checks.outputs.lint_failed }}' === 'true') {
+              errorDetails += '\n### 🔍 Linting Errors\n```\n';
+              try {
+                errorDetails += fs.readFileSync('./error-logs/lint-output.txt', 'utf8');
+              } catch(e) {}
+              errorDetails += '\n```\n';
+            }
+
+            if ('${{ needs.quality-checks.outputs.type_failed }}' === 'true') {
+              errorDetails += '\n### 📘 Type Errors\n```\n';
+              try {
+                errorDetails += fs.readFileSync('./error-logs/typecheck-output.txt', 'utf8');
+              } catch(e) {}
+              errorDetails += '\n```\n';
+            }
+
+            if ('${{ needs.playwright-tests.outputs.tests_failed }}' === 'true') {
+              errorDetails += '\n### 🎭 Test Failures\n```\n';
+              try {
+                errorDetails += fs.readFileSync('./error-logs/playwright-output.txt', 'utf8').substring(0, 2000);
+              } catch(e) {}
+              errorDetails += '\n```\n';
+            }
+
+            const fixStatus = '${{ steps.commit.outputs.fixes_pushed }}' === 'true' 
+              ? '✅ I\'ve pushed automatic fixes. The tests will run again.'
+              : '⚠️ I couldn\'t automatically fix these issues. Manual review may be needed.';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🤖 AI Auto-Fix Report
+              
+              ${errorDetails}
+              
+              ### Status
+              ${fixStatus}
+              
+              ---
+              *The workflow will re-run automatically to verify the fixes.*`
+            });
+
+  verify-success:
+    needs: [quality-checks, playwright-tests]
+    if: |
+      needs.quality-checks.outputs.lint_failed != 'true' &&
+      needs.quality-checks.outputs.type_failed != 'true' &&
+      needs.quality-checks.outputs.build_failed != 'true' &&
+      needs.playwright-tests.outputs.tests_failed != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment success on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ✅ All Checks Passed!
+              
+              🎉 The implementation is complete and all tests are passing.
+              
+              ### Results
+              - ✅ Linting passed
+              - ✅ Type checking passed
+              - ✅ Build successful
+              - ✅ E2E tests passed
+              
+              This PR is ready for review and merge!`
+            });
+
+            // Add ready-for-review label
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['ready-for-review']
+            });

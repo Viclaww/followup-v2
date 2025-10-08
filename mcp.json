@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "node",
+      "args": [".github/mcp-servers/playwright-mcp.js"],
+      "description": "Provides context about Playwright E2E tests, test structure, and available test utilities"
+    },
+    "firebase": {
+      "command": "node",
+      "args": [".github/mcp-servers/firebase-mcp.js"],
+      "description": "Provides context about Firebase configuration, collections, and data models"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./src",
+        "./tests"
+      ],
+      "description": "Provides read-only access to source and test directories"
+    },
+    "project-context": {
+      "command": "node",
+      "args": [".github/mcp-servers/project-context-mcp.js"],
+      "description": "Provides project structure, dependencies, and coding patterns"
+    }
+  }
+}

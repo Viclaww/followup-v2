@@ -1,5 +1,31 @@
 # Welcome to your Lovable project
 
+## 🤖 AI-Driven Development Workflow
+
+This project now includes a **complete AI-driven development workflow** that automates the entire development cycle from issue creation to deployment!
+
+### ✨ What's New
+
+- ✅ **Automated Code Implementation**: Create an issue, AI implements it
+- ✅ **AI-Generated Tests**: Automatic unit and E2E test generation
+- ✅ **Auto-Fix**: AI automatically fixes failing tests
+- ✅ **CI/CD Pipeline**: Linting, type checking, and testing
+- ✅ **One-Command Setup**: Get started in minutes
+
+### 🚀 Quick Start
+
+```bash
+# 1. Install AI workflow dependencies
+./setup-ai-workflow.sh
+
+# 2. Create a GitHub issue with the 'ai-implement' label
+# 3. Watch the AI build, test, and create a PR automatically!
+```
+
+📚 **Read the full documentation**: [QUICKSTART.md](./QUICKSTART.md)
+
+---
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/8f828c7f-7417-42cb-9b25-842cff1c0a4d
@@ -13,6 +39,13 @@ There are several ways of editing your application.
 Simply visit the [Lovable Project](https://lovable.dev/projects/8f828c7f-7417-42cb-9b25-842cff1c0a4d) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
+
+**Use AI-Driven Workflow** 🆕
+
+1. Create a GitHub issue using the AI templates
+2. Add the `ai-implement` label
+3. Wait for AI to implement, test, and create a PR
+4. Review and merge!
 
 **Use your preferred IDE**
 

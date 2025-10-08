@@ -1,0 +1,38 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server@latest"],
+      "env": {
+        "PLAYWRIGHT_CONFIG_PATH": "./playwright.config.ts",
+        "PLAYWRIGHT_TESTS_PATH": "./tests/e2e"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "./src",
+        "./tests",
+        "./.github/scripts"
+      ]
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git@latest",
+        "--repository",
+        "."
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@latest"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+      }
+    }
+  }
+}
