@@ -7,6 +7,7 @@ import { AnalyticsScreen } from "@/screens/analytics";
 import { History } from "@/screens/history";
 import { Onboarding } from "@/screens/onboarding";
 import { useFollowUps } from "@/hooks/use-followups";
+import { CustomerCareButton } from "@/components/customer-care-button";
 
 type AppScreen = "onboarding" | "dashboard" | "add" | "history" | "analytics";
 
@@ -94,6 +95,8 @@ export default function FollowUpApp() {
           onTabChange={handleTabChange}
         />
       )}
+
+      <CustomerCareButton />
     </div>
   );
 }
