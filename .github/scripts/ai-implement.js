@@ -247,3 +247,48 @@ module.exports = {
     return await implementer.implement(options);
   },
 };
+
+// CLI execution
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  const getArg = (name) => {
+    const arg = args.find((a) => a.startsWith(`--${name}=`));
+    return arg ? arg.split("=")[1] : "";
+  };
+
+  const options = {
+    issueNumber: getArg("issue-number"),
+    issueTitle: getArg("issue-title"),
+    issueBody: getArg("issue-body"),
+    workspace: process.env.GITHUB_WORKSPACE || process.cwd(),
+    apiKey: process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY,
+    mcpConfigPath: process.env.MCP_CONFIG_PATH,
+  };
+
+  (async () => {
+    try {
+      const implementer = new AIImplementer(options.apiKey);
+      const result = await implementer.implement(options);
+      
+      // Output results for GitHub Actions (using GITHUB_OUTPUT)
+      const fs = require("fs");
+      if (process.env.GITHUB_OUTPUT) {
+        fs.appendFileSync(
+          process.env.GITHUB_OUTPUT,
+          `files_changed=${result.filesChanged.join(',')}\n`
+        );
+        fs.appendFileSync(
+          process.env.GITHUB_OUTPUT,
+          `implementation_summary=${result.summary.join('\\n')}\n`
+        );
+      }
+      
+      console.log("\n✅ Implementation complete!");
+      console.log(`Files changed: ${result.filesChanged.join(', ')}`);
+      process.exit(0);
+    } catch (error) {
+      console.error("❌ Implementation failed:", error.message);
+      process.exit(1);
+    }
+  })();
+}
